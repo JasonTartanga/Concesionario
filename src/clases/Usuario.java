@@ -10,11 +10,12 @@ public class Usuario {
 	private int telefono;
 	private LocalDate fecha_nac;
 	private char genero;
+	private String titulacion;
 
 	/*************** METODOS ***************/
 
-
 	/*************** CONSTRUCTOR ***************/
+
 	/*************** GETTER && SETTER ***************/
 	public String getUsuario() {
 		return usuario;
@@ -62,6 +63,14 @@ public class Usuario {
 
 	public void setGenero(char genero) {
 		this.genero = genero;
+	}
+
+	public String getTitulacion() {
+		return titulacion;
+	}
+
+	public void setTitulacion(String titulacion) {
+		this.titulacion = titulacion;
 	}
 
 }

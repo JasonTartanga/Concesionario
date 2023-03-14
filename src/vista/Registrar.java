@@ -6,7 +6,13 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -18,6 +24,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import clases.Usuario;
+import modelo.DAO;
 
 public class Registrar extends JDialog implements ActionListener {
 
@@ -36,8 +45,14 @@ public class Registrar extends JDialog implements ActionListener {
 	private JButton btnLimpiar;
 	private JButton btnConfirmar;
 
-	public Registrar(VMain vMain, boolean b) {
+	private ButtonGroup genero;
+
+	private DAO dao;
+
+	public Registrar(VMain vMain, boolean b, DAO dao) {
 		super(vMain);
+
+		this.dao = dao;
 		setTitle("Registrarse");
 		this.setModal(b);
 
@@ -124,10 +139,15 @@ public class Registrar extends JDialog implements ActionListener {
 		rdbtnOtro.setFont(new Font("Serif", Font.PLAIN, 14));
 		rdbtnOtro.setBounds(183, 409, 109, 23);
 		contentPanel.add(rdbtnOtro);
+		
+		genero = new ButtonGroup();
+		genero.add(rdbtnHombre);
+		genero.add(rdbtnMujer);
 
 		titulacion = new JComboBox<String>();
 		titulacion.setBounds(183, 464, 257, 29);
 		contentPanel.add(titulacion);
+		titulacion.setSelectedIndex(-1);
 		titulacion.addItem("ESO");
 		titulacion.addItem("Bachiller");
 		titulacion.addItem("Formacion Profesional");
@@ -154,31 +174,56 @@ public class Registrar extends JDialog implements ActionListener {
 		if (e.getSource().equals(btnLimpiar)) {
 			limpiar();
 		} else if (e.getSource().equals(btnConfirmar)) {
-			confirmar();
+			if (confirmar()) {
+				altaUsuario();
+			}
 		}
+	}
+
+	private void altaUsuario() {
+		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		LocalDate fecha = LocalDate.parse(fecha_nac.getText(), formateador);
+
+		char genero;
+		if (rdbtnHombre.isSelected()) {
+			genero = 'H';
+		} else {
+			genero = 'M';
+		}
+
+		Usuario crear = new Usuario();
+		crear.setUsuario(usuario.getText());
+		crear.setContrasenia(contrasenia.getText());
+		crear.setDni(dni.getText());
+		crear.setTelefono(Integer.parseInt(telefono.getText()));
+		crear.setFecha_nac(fecha);
+		crear.setGenero(genero);
+		crear.setTitulacion(titulacion.getItemAt(titulacion.getSelectedIndex()));
+
+		dao.altaPropietario(crear);
 	}
 
 	@SuppressWarnings("deprecation")
 	private boolean confirmar() {
-		JTextField[] campos = {usuario, contrasenia, dni, telefono, fecha_nac};
+		JTextField[] campos = { usuario, contrasenia, dni, telefono, fecha_nac };
 		boolean correcto = true;
 
-		//Comprobamos si los campos estan vacios
+		// Comprobamos si los campos estan vacios
 		for (int i = 0; i < campos.length; i++) {
-			if(campos[i].getText().isBlank()) {
+			if (campos[i].getText().isBlank()) {
 				campos[i].setBackground(new Color(153, 51, 51));
 				correcto = false;
-			}else {
+			} else {
 				usuario.setBackground(new Color(102, 204, 102));
 			}
 		}
-		
-		if(!correcto) {
+
+		if (!correcto) {
 			JOptionPane.showMessageDialog(null, "Rellene todos los campos", "ERROR", 0);
 			return false;
 		}
-		
-		//Comprobamos que el usuario
+
+		// Comprobamos que el usuario
 		if (usuario.getText().length() > 50) {
 			usuario.setBackground(new Color(153, 51, 51));
 			JOptionPane.showMessageDialog(null, "El nombre no puede contener mas de 50 caracteres", "ERROR", 0);
@@ -186,24 +231,24 @@ public class Registrar extends JDialog implements ActionListener {
 		} else {
 			usuario.setBackground(new Color(102, 204, 102));
 		}
-		
-		//Comprobamos la contraseña
+
+		// Comprobamos la contraseña
 		if (contrasenia.getText().length() > 25) {
 			JOptionPane.showMessageDialog(null, "La contraseña no puede contener mas de 50 caracteres", "ERROR", 0);
 			correcto = false;
 		} else {
 			contrasenia.setBackground(new Color(102, 204, 102));
 		}
-		
-		//Comprobamos el dni
+
+		// Comprobamos el dni
 		if (!comprobarDni(dni.getText())) {
 			JOptionPane.showMessageDialog(null, "El DNI no es correcto", "ERROR", 0);
 			correcto = false;
 		} else {
 			dni.setBackground(new Color(102, 204, 102));
 		}
-		
-		//Comprobamos el telefono
+
+		// Comprobamos el telefono
 		if (telefono.getText().length() != 9) {
 			telefono.setBackground(new Color(153, 51, 51));
 			JOptionPane.showMessageDialog(null, "El telefono no tiene 9 digitos", "ERROR", 0);
@@ -211,8 +256,8 @@ public class Registrar extends JDialog implements ActionListener {
 		} else {
 			telefono.setBackground(new Color(102, 204, 102));
 		}
-		
-		//Comrpobamos la fecha
+
+		// Comrpobamos la fecha
 		if (fecha_nac.getText().length() > 25) {
 			fecha_nac.setBackground(new Color(153, 51, 51));
 			JOptionPane.showMessageDialog(null, "La fecha no es correcta");
@@ -220,10 +265,8 @@ public class Registrar extends JDialog implements ActionListener {
 		} else {
 			fecha_nac.setBackground(new Color(102, 204, 102));
 		}
-		
-		//Comprobamos el genero
-		
 
+		// Comprobamos el genero
 
 		return true;
 	}

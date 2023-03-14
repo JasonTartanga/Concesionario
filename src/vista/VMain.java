@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import modelo.DAO;
+
 public class VMain extends JFrame implements ActionListener {
 
 	/**
@@ -17,11 +19,14 @@ public class VMain extends JFrame implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	
+
 	private JButton btnIniciarSesion;
 	private JButton btnRegistrarse;
-
-	public VMain() {
+	private DAO dao;
+	
+	public VMain(DAO dao) {
+		this.dao = dao;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 750, 557);
 		setLocationRelativeTo(null);
@@ -48,21 +53,22 @@ public class VMain extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-	if(e.getSource().equals(btnRegistrarse)) {
-		registrarse();
-	}else if(e.getSource().equals(btnIniciarSesion)) {
-		iniciarSesion();
-	}
-		
+		if (e.getSource().equals(btnRegistrarse)) {
+			registrarse();
+		} else if (e.getSource().equals(btnIniciarSesion)) {
+			iniciarSesion();
+		}
+
 	}
 
 	private void iniciarSesion() {
-		// TODO Auto-generated method stub
-		
+		IniciarSesion ini = new IniciarSesion(this, true, dao);
+		this.setVisible(false);
+		ini.setVisible(true);
 	}
 
 	private void registrarse() {
-		Registrar reg = new Registrar(this, true);
+		Registrar reg = new Registrar(this, true, dao);
 		this.setVisible(false);
 		reg.setVisible(true);
 	}
