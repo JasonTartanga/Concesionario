@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import clases.Usuario;
 
@@ -69,29 +71,31 @@ public class DAOImplementacionBD implements DAO {
 	}
 
 	@Override
-	public ResultSet inicarSesion() {
+	public List<Usuario> inicarSesion() {
 		this.abrirConexion();
 
-		ResultSet rs = null;
+		ResultSet rs;
+		List<Usuario> usuarios = new ArrayList<>();
 
 		try {
-			rs = stmt.executeQuery(INICIAR_SESION);
+			stmt = con.prepareStatement(INICIAR_SESION);
+			rs = stmt.executeQuery();
 
+			while (rs.next()) {
+				Usuario usu = new Usuario();
+				usu.setUsuario(rs.getString("nombre"));
+				usu.setContrasenia(rs.getString("contrasenia"));
+				usuarios.add(usu);
+			}
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 
-		} finally {
-			try {
-				rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-
-			}
 		}
 
 		this.cerrarConexion();
 
-		return rs;
+		return usuarios;
 	}
 
 }

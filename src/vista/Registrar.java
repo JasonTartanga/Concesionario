@@ -6,11 +6,9 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -48,10 +46,11 @@ public class Registrar extends JDialog implements ActionListener {
 	private ButtonGroup genero;
 
 	private DAO dao;
-
+	private VMain main;
 	public Registrar(VMain vMain, boolean b, DAO dao) {
 		super(vMain);
 
+		this.main = vMain;
 		this.dao = dao;
 		setTitle("Registrarse");
 		this.setModal(b);
@@ -139,7 +138,7 @@ public class Registrar extends JDialog implements ActionListener {
 		rdbtnOtro.setFont(new Font("Serif", Font.PLAIN, 14));
 		rdbtnOtro.setBounds(183, 409, 109, 23);
 		contentPanel.add(rdbtnOtro);
-		
+
 		genero = new ButtonGroup();
 		genero.add(rdbtnHombre);
 		genero.add(rdbtnMujer);
@@ -180,10 +179,11 @@ public class Registrar extends JDialog implements ActionListener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void altaUsuario() {
 		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		LocalDate fecha = LocalDate.parse(fecha_nac.getText(), formateador);
-
+		
 		char genero;
 		if (rdbtnHombre.isSelected()) {
 			genero = 'H';
@@ -201,9 +201,17 @@ public class Registrar extends JDialog implements ActionListener {
 		crear.setTitulacion(titulacion.getItemAt(titulacion.getSelectedIndex()));
 
 		dao.altaPropietario(crear);
+
+		vovlerMain();
 	}
 
-	@SuppressWarnings("deprecation")
+	private void vovlerMain() {
+		JOptionPane.showMessageDialog(null, "Registro correcto", "", 3);
+		this.dispose();
+		main.setVisible(true);		
+	}
+
+	@SuppressWarnings({ "deprecation", "unused" })
 	private boolean confirmar() {
 		JTextField[] campos = { usuario, contrasenia, dni, telefono, fecha_nac };
 		boolean correcto = true;
@@ -234,6 +242,7 @@ public class Registrar extends JDialog implements ActionListener {
 
 		// Comprobamos la contraseña
 		if (contrasenia.getText().length() > 25) {
+			contrasenia.setBackground(new Color(153, 51, 51));
 			JOptionPane.showMessageDialog(null, "La contraseña no puede contener mas de 50 caracteres", "ERROR", 0);
 			correcto = false;
 		} else {
@@ -242,6 +251,7 @@ public class Registrar extends JDialog implements ActionListener {
 
 		// Comprobamos el dni
 		if (!comprobarDni(dni.getText())) {
+			dni.setBackground(new Color(153, 51, 51));
 			JOptionPane.showMessageDialog(null, "El DNI no es correcto", "ERROR", 0);
 			correcto = false;
 		} else {
@@ -258,28 +268,48 @@ public class Registrar extends JDialog implements ActionListener {
 		}
 
 		// Comrpobamos la fecha
-		if (fecha_nac.getText().length() > 25) {
-			fecha_nac.setBackground(new Color(153, 51, 51));
-			JOptionPane.showMessageDialog(null, "La fecha no es correcta");
-			correcto = false;
-		} else {
+		try {
+			DateTimeFormatter formateador = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			LocalDate fecha = LocalDate.parse(fecha_nac.getText(), formateador);
 			fecha_nac.setBackground(new Color(102, 204, 102));
+
+		} catch (DateTimeParseException e) {
+			fecha_nac.setBackground(new Color(153, 51, 51));
+			JOptionPane.showMessageDialog(null, "Introduce una fecha valida");
+			correcto = false;
 		}
 
 		// Comprobamos el genero
+		if(!rdbtnHombre.isSelected() && !rdbtnMujer.isSelected()) {
+			JOptionPane.showMessageDialog(null, "Elige un genero", "ERROR", 0);
+			correcto = false;
+		}
+		
+		if (correcto) {
+			return true;
+		} else {
+			return false;
+		}
 
-		return true;
 	}
 
 	private void limpiar() {
 		usuario.setText("");
+		usuario.setBackground(new Color(240, 240, 240));
 		contrasenia.setText("");
+		contrasenia.setBackground(new Color(240, 240, 240));
 		dni.setText("");
+		dni.setBackground(new Color(240, 240, 240));
 		telefono.setText("");
+		telefono.setBackground(new Color(240, 240, 240));
 		fecha_nac.setText("");
+		fecha_nac.setBackground(new Color(240, 240, 240));
 		rdbtnHombre.setSelected(false);
+		rdbtnHombre.setBackground(new Color(240, 240, 240));
 		rdbtnMujer.setSelected(false);
+		rdbtnMujer.setBackground(new Color(240, 240, 240));
 		titulacion.setSelectedIndex(-1);
+		titulacion.setBackground(new Color(240, 240, 240));
 	}
 
 	public boolean comprobarDni(String dni) {

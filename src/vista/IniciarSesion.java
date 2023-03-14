@@ -1,23 +1,22 @@
 package vista;
 
 import java.awt.BorderLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import modelo.DAO;
-
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import clases.Usuario;
+import modelo.DAO;
 
 public class IniciarSesion extends JDialog implements ActionListener {
 
@@ -33,7 +32,7 @@ public class IniciarSesion extends JDialog implements ActionListener {
 		this.setModal(b);
 
 		this.dao = dao;
-		
+
 		setBounds(100, 100, 750, 557);
 		setLocationRelativeTo(null);
 
@@ -90,23 +89,16 @@ public class IniciarSesion extends JDialog implements ActionListener {
 
 	@SuppressWarnings("deprecation")
 	private boolean comprobar() {
-		String usuCorrecto = null;
-		String conCorrecto = null;
-		ResultSet rs = dao.inicarSesion();
+		List<Usuario> usuarios = dao.inicarSesion();
 		
-		try {
-			usuCorrecto = rs.getString("nombre");
-			conCorrecto = rs.getString("contrasenia");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for (Usuario u : usuarios) {
+			if (usuario.getText().equalsIgnoreCase(u.getUsuario())
+					&& contrasenia.getText().equals(u.getContrasenia())) {
+				return true;
+			}
 		}
-		
-		
-		if (usuario.getText().equalsIgnoreCase(usuCorrecto) && contrasenia.getText().equals(conCorrecto)) {
-			return true;
-		} else {
-			return false;
-		}
+		contrasenia.setText("");
+		return false;
+
 	}
 }

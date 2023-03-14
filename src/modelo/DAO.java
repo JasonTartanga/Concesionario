@@ -1,6 +1,6 @@
 package modelo;
 
-import java.sql.ResultSet;
+import java.util.List;
 
 import clases.Usuario;
 
@@ -8,5 +8,5 @@ public interface DAO {
 
 	public void altaPropietario(Usuario usu);
 	
-	public ResultSet inicarSesion();
+	public List<Usuario> inicarSesion();
 }

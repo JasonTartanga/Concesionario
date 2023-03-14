@@ -45,23 +45,21 @@ public class Menu extends JDialog implements ActionListener {
 		btnListarVehiculo.setBackground(SystemColor.controlHighlight);
 		btnListarVehiculo.setBounds(378, 30, 330, 214);
 		contentPanel.add(btnListarVehiculo);
+		
+		JButton btnAltaCoche_1 = new JButton("");
+		btnAltaCoche_1.setFont(new Font("Serif", Font.PLAIN, 30));
+		btnAltaCoche_1.setBackground(SystemColor.controlHighlight);
+		btnAltaCoche_1.setBounds(24, 293, 330, 214);
+		contentPanel.add(btnAltaCoche_1);
+		
+		JButton btnAltaCoche_1_1 = new JButton("");
+		btnAltaCoche_1_1.setFont(new Font("Serif", Font.PLAIN, 30));
+		btnAltaCoche_1_1.setBackground(SystemColor.controlHighlight);
+		btnAltaCoche_1_1.setBounds(378, 293, 330, 214);
+		contentPanel.add(btnAltaCoche_1_1);
 		btnListarVehiculo.addActionListener(this);
 
-		btnNewButton = new JButton("");
-		btnNewButton.setFont(new Font("Serif", Font.PLAIN, 30));
-		btnNewButton.setBackground(SystemColor.controlHighlight);
-		btnNewButton.setBounds(24, 274, 330, 214);
-		contentPanel.add(btnListarVehiculo);
-		btnNewButton.addActionListener(this);
-
-		btnNewButton1 = new JButton("");
-		btnNewButton1.setFont(new Font("Serif", Font.PLAIN, 30));
-		btnNewButton1.setBackground(SystemColor.controlHighlight);
-		btnNewButton1.setBounds(378, 274, 330, 214);
-		contentPanel.add(btnNewButton1);
-		contentPanel.add(btnListarVehiculo);
-		btnNewButton1.addActionListener(this);
-
+		
 	}
 
 	@Override
@@ -78,5 +76,4 @@ public class Menu extends JDialog implements ActionListener {
 		ic.setVisible(false);
 
 	}
-
 }

@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import modelo.DAO;
+import java.awt.Toolkit;
 
 public class VMain extends JFrame implements ActionListener {
 
@@ -25,6 +26,7 @@ public class VMain extends JFrame implements ActionListener {
 	private DAO dao;
 	
 	public VMain(DAO dao) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(VMain.class.getResource("/clases/coche.png")));
 		this.dao = dao;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
