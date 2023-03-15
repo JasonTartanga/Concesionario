@@ -15,9 +15,6 @@ import java.awt.Toolkit;
 
 public class VMain extends JFrame implements ActionListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
@@ -26,7 +23,7 @@ public class VMain extends JFrame implements ActionListener {
 	private DAO dao;
 	
 	public VMain(DAO dao) {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(VMain.class.getResource("/clases/coche.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(VMain.class.getResource("/utilidades/coche.png")));
 		this.dao = dao;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

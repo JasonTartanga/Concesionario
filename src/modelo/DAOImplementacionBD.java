@@ -6,8 +6,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import clases.Usuario;
 
@@ -20,7 +20,7 @@ public class DAOImplementacionBD implements DAO {
 	final private String USER = "root";
 	final private String PASSWORD = "abcd*1234";
 
-	final private String INICIAR_SESION = "SELECT nombre, contrasenia FROM usuario";
+	final private String INICIAR_SESION = "SELECT * FROM usuario WHERE nombre = ? and contrasenia = ?";
 	final private String ALTA_PROPIETARIO = "INSERT INTO usuario VALUES(?, ?, ?, ?, ?, ?, ?)";
 
 	private void abrirConexion() {
@@ -71,31 +71,45 @@ public class DAOImplementacionBD implements DAO {
 	}
 
 	@Override
-	public List<Usuario> inicarSesion() {
-		this.abrirConexion();
-
+	public Usuario inicarSesion(String nombre, String contrasenia) {
+		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		Usuario usu = null;
 		ResultSet rs;
-		List<Usuario> usuarios = new ArrayList<>();
+
+		this.abrirConexion();
 
 		try {
 			stmt = con.prepareStatement(INICIAR_SESION);
-			rs = stmt.executeQuery();
 
-			while (rs.next()) {
-				Usuario usu = new Usuario();
+			stmt.setString(1, nombre);
+			stmt.setString(2, contrasenia);
+			
+			rs = stmt.executeQuery();
+			
+			System.out.println(stmt);
+			System.out.println(rs);
+			System.out.println(rs.getRow());
+			
+			if (rs.next()) {
+				usu = new Usuario();
 				usu.setUsuario(rs.getString("nombre"));
 				usu.setContrasenia(rs.getString("contrasenia"));
-				usuarios.add(usu);
+				usu.setDni(rs.getString("dni"));
+				usu.setTelefono(rs.getInt("telefono"));
+				usu.setFecha_nac(LocalDate.parse(rs.getDate("fecha_nac")+ "", formateador));
+				usu.setGenero(rs.getString("genero").charAt(0));
+				usu.setTitulacion(rs.getString("titulacion"));
 			}
+
 			rs.close();
 		} catch (SQLException e) {
+			
 			e.printStackTrace();
-
 		}
 
 		this.cerrarConexion();
 
-		return usuarios;
+		return usu;
 	}
 
 }

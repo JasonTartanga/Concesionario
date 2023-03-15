@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -89,16 +87,14 @@ public class IniciarSesion extends JDialog implements ActionListener {
 
 	@SuppressWarnings("deprecation")
 	private boolean comprobar() {
-		List<Usuario> usuarios = dao.inicarSesion();
-		
-		for (Usuario u : usuarios) {
-			if (usuario.getText().equalsIgnoreCase(u.getUsuario())
-					&& contrasenia.getText().equals(u.getContrasenia())) {
-				return true;
-			}
+		Usuario usu = dao.inicarSesion(usuario.getText(), contrasenia.getText());
+
+		if (usu != null) {
+			return true;
+		} else {
+			contrasenia.setText("");
+			return false;
 		}
-		contrasenia.setText("");
-		return false;
 
 	}
 }
