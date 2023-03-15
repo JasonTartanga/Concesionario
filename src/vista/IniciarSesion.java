@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 import clases.Usuario;
 import modelo.DAO;
+import java.awt.SystemColor;
 
 public class IniciarSesion extends JDialog implements ActionListener {
 
@@ -51,8 +52,9 @@ public class IniciarSesion extends JDialog implements ActionListener {
 		contentPanel.add(contrasenia);
 
 		btnConfirmar = new JButton("Confirmar");
+		btnConfirmar.setBackground(SystemColor.controlHighlight);
 		btnConfirmar.setFont(new Font("Serif", Font.PLAIN, 20));
-		btnConfirmar.setBounds(250, 455, 234, 52);
+		btnConfirmar.setBounds(250, 438, 234, 52);
 		contentPanel.add(btnConfirmar);
 		btnConfirmar.addActionListener(this);
 
@@ -80,7 +82,7 @@ public class IniciarSesion extends JDialog implements ActionListener {
 	}
 
 	private void inicarSesion() {
-		Menu menu = new Menu(this, true);
+		Menu menu = new Menu(this, true, dao);
 		this.setVisible(false);
 		menu.setVisible(true);
 	}
