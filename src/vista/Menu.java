@@ -1,7 +1,10 @@
 package vista;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -9,11 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import modelo.DAO;
-
-import java.awt.Font;
-import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Menu extends JDialog implements ActionListener {
 

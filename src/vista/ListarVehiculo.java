@@ -1,24 +1,22 @@
 package vista;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import clases.Coche;
-import modelo.DAO;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import java.awt.SystemColor;
+import javax.swing.border.EmptyBorder;
+
+import clases.Coche;
+import modelo.DAO;
 
 public class ListarVehiculo extends JDialog implements ActionListener {
 

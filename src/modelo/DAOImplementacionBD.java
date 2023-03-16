@@ -61,6 +61,8 @@ public class DAOImplementacionBD implements DAO {
 		try {
 			stmt = con.prepareStatement(ALTA_PROPIETARIO);
 
+			System.out.println(Date.valueOf(usu.getFecha_nac()));
+
 			stmt.setString(1, usu.getUsuario());
 			stmt.setString(2, usu.getContrasenia());
 			stmt.setString(3, usu.getDni());
@@ -211,7 +213,7 @@ public class DAOImplementacionBD implements DAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.cerrarConexion();
 		return usuarios;
 	}
@@ -221,27 +223,28 @@ public class DAOImplementacionBD implements DAO {
 		@SuppressWarnings("unused")
 		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		Usuario usu = new Usuario();
-		
+
 		this.abrirConexion();
-		
+
 		try {
 			stmt = con.prepareStatement(MOSTRAR_USUARIO);
-			
+
 			stmt.setString(1, dni);
 			ResultSet rs = stmt.executeQuery();
-			
-			if(rs.next()) {
+
+			if (rs.next()) {
 				usu.setUsuario(rs.getString("nombre"));
 				usu.setContrasenia(rs.getString("contrasenia"));
 				usu.setDni(rs.getString("dni"));
 				usu.setTelefono(Integer.parseInt(rs.getString("telefono")));
+				usu.setFecha_nac(LocalDate.parse(rs.getDate("fecha_nac") + "", formateador));
 				usu.setGenero(rs.getString("genero").charAt(0));
 				usu.setTitulacion(rs.getString("titulacion"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.cerrarConexion();
 		return usu;
 	}

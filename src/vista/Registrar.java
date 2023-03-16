@@ -146,11 +146,11 @@ public class Registrar extends JDialog implements ActionListener {
 		titulacion = new JComboBox<String>();
 		titulacion.setBounds(183, 464, 257, 29);
 		contentPanel.add(titulacion);
-		titulacion.setSelectedIndex(-1);
 		titulacion.addItem("ESO");
 		titulacion.addItem("Bachiller");
 		titulacion.addItem("Formacion Profesional");
 		titulacion.addItem("Universidad");
+		titulacion.setSelectedIndex(-1);
 
 		JLabel lblNewLabel_2 = new JLabel("Titulacion:");
 		lblNewLabel_2.setFont(new Font("Serif", Font.PLAIN, 14));

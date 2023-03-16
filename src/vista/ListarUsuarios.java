@@ -1,23 +1,22 @@
 package vista;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import clases.Usuario;
 import modelo.DAO;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JTextArea;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.awt.SystemColor;
 
 public class ListarUsuarios extends JDialog implements ActionListener {
 
@@ -66,6 +65,7 @@ public class ListarUsuarios extends JDialog implements ActionListener {
 		for (Usuario usuario : usuarios) {
 			listaUsuarios.addItem(usuario.getDni());
 		}
+		listaUsuarios.setSelectedIndex(-1);
 
 		pantalla = new JTextArea();
 		pantalla.setFont(new Font("Monospaced", Font.PLAIN, 20));
