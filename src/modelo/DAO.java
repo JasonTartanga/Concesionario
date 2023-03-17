@@ -20,4 +20,10 @@ public interface DAO {
 	public List<Usuario> listarUsuarios();
 	
 	public Usuario mostrarUsuario(String usuario);
+	
+	public List<Coche> listarCochesDisponibles();
+	
+	public void modificarPropietario(String dni, String matricula);
+	
+	public Usuario mostrarUsuarioPorDni(String dni);
 }

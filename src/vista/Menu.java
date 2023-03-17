@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -12,24 +14,30 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import modelo.DAO;
+import java.awt.Toolkit;
+import java.awt.Color;
+import javax.swing.JLabel;
 
 public class Menu extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private JButton btnListarVehiculo;
-	private JButton btnAltaCoche;
-	private JButton btnListarUsuarios;
-	private JButton btnAltaCoche_1;
-	
-	private DAO dao;
 
-	public Menu(IniciarSesion iniciarSesion, boolean b, DAO dao) {
-		super(iniciarSesion);
+	private DAO dao;
+	private VMain main;
+	private JButton btnUsuario;
+	private JButton btnVehiculos;
+	private JLabel lblNewLabel;
+
+	public Menu(VMain main, boolean b, DAO dao) {
+		super(main);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Menu.class.getResource("/utilidades/coche.png")));
+		setTitle("Menu");
+		setResizable(false);
 		this.setModal(b);
 
 		this.dao = dao;
-		
+		this.main = main;
 		setBounds(100, 100, 750, 557);
 		setLocationRelativeTo(null);
 
@@ -38,65 +46,59 @@ public class Menu extends JDialog implements ActionListener {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 
-		btnAltaCoche = new JButton("Alta Vehiculo");
-		btnAltaCoche.setBackground(SystemColor.controlHighlight);
-		btnAltaCoche.setFont(new Font("Serif", Font.PLAIN, 30));
-		btnAltaCoche.setBounds(10, 11, 330, 214);
-		contentPanel.add(btnAltaCoche);
-		btnAltaCoche.addActionListener(this);
+		btnUsuario = new JButton("Usuarios");
+		btnUsuario.setFont(new Font("Serif", Font.PLAIN, 30));
+		btnUsuario.setForeground(new Color(0, 0, 0));
+		btnUsuario.setBackground(SystemColor.controlHighlight);
+		btnUsuario.setBounds(31, 169, 320, 180);
+		contentPanel.add(btnUsuario);
+		btnUsuario.addActionListener(this);
 
-		btnListarVehiculo = new JButton("Listar Vehiculos");
-		btnListarVehiculo.setFont(new Font("Serif", Font.PLAIN, 30));
-		btnListarVehiculo.setBackground(SystemColor.controlHighlight);
-		btnListarVehiculo.setBounds(394, 11, 330, 214);
-		contentPanel.add(btnListarVehiculo);
-		btnListarVehiculo.addActionListener(this);
-		
-		btnAltaCoche_1 = new JButton("");
-		btnAltaCoche_1.setFont(new Font("Serif", Font.PLAIN, 30));
-		btnAltaCoche_1.setBackground(SystemColor.controlHighlight);
-		btnAltaCoche_1.setBounds(10, 293, 330, 214);
-		contentPanel.add(btnAltaCoche_1);
-		
-		btnListarUsuarios = new JButton("Listar Usuarios");
-		btnListarUsuarios.setFont(new Font("Serif", Font.PLAIN, 30));
-		btnListarUsuarios.setBackground(SystemColor.controlHighlight);
-		btnListarUsuarios.setBounds(394, 293, 330, 214);
-		contentPanel.add(btnListarUsuarios);
-		btnListarUsuarios.addActionListener(this);
+		btnVehiculos = new JButton("Vehiculos");
+		btnVehiculos.setFont(new Font("Serif", Font.PLAIN, 30));
+		btnVehiculos.setForeground(new Color(0, 0, 0));
+		btnVehiculos.setBackground(SystemColor.controlHighlight);
+		btnVehiculos.setBounds(382, 169, 320, 180);
+		contentPanel.add(btnVehiculos);
+		btnVehiculos.addActionListener(this);
 
-		
+		lblNewLabel = new JLabel("Que quieres gestionar?");
+		lblNewLabel.setFont(new Font("Serif", Font.PLAIN, 30));
+		lblNewLabel.setBounds(232, 36, 269, 39);
+		contentPanel.add(lblNewLabel);
+
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				volver();
+			}
+		});
+
+	}
+
+	protected void volver() {
+		this.dispose();
+		main.setVisible(true);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(btnAltaCoche)) {
-			altaCoche();
-		}else if(e.getSource().equals(btnListarVehiculo)) {
-			listarVehiculo();
-		}else if(e.getSource().equals(btnListarUsuarios)) {
-			listarUsuarios();
+		if (e.getSource().equals(btnUsuario)) {
+			usuario();
+		} else if (e.getSource().equals(btnVehiculos)) {
+			vehiculos();
 		}
-
 	}
 
-	private void listarUsuarios() {
-		ListarUsuarios list = new ListarUsuarios(this, true, dao);
+	private void usuario() {
+		MenuUsuario usu = new MenuUsuario(this, true, dao);
 		this.setVisible(false);
-		list.setVisible(true);
-		
+		usu.setVisible(true);
 	}
 
-	private void listarVehiculo() {
-		ListarVehiculo list = new ListarVehiculo(this, true, dao);
+	private void vehiculos() {
+		MenuVehiculos vehi = new MenuVehiculos(this, true, dao);
 		this.setVisible(false);
-		list.setVisible(true);
+		vehi.setVisible(true);
 	}
 
-	private void altaCoche() {
-		IntroducirCoche ic = new IntroducirCoche(this, true, dao);
-		this.setVisible(false);
-		ic.setVisible(true);
-
-	}
 }

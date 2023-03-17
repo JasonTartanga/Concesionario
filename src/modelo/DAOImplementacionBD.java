@@ -27,9 +27,12 @@ public class DAOImplementacionBD implements DAO {
 	final private String ALTA_PROPIETARIO = "INSERT INTO usuario VALUES(?, ?, ?, ?, ?, ?, ?)";
 	final private String ALTA_COCHE = "INSERT INTO coche VALUES(?, ?, ?, ?, ?, ?)";
 	final private String LISTAR_COCHES = "SELECT matricula FROM coche";
+	final private String LISTAR_COCHES_DISPONIBLES = "SELECT matricula FROM coche WHERE dni_propietario is null";
 	final private String MOSTRAR_COCHE = "SELECT * FROM coche WHERE matricula = ?";
 	final private String LISTAR_USUARIOS = "SELECT dni FROM usuario";
 	final private String MOSTRAR_USUARIO = "SELECT * FROM usuario WHERE dni = ?";
+	final private String CAMBIAR_PROPIETARIO = "UPDATE COCHE SET dni_propietario = ? WHERE matricula = ?";
+	final private String MOSTRAR_POR_DNI = "SELECT * FROM usuario WHERE dni = ?";
 
 	private void abrirConexion() {
 		try {
@@ -165,6 +168,31 @@ public class DAOImplementacionBD implements DAO {
 		this.cerrarConexion();
 		return coches;
 	}
+	
+	@Override
+	public List<Coche> listarCochesDisponibles() {
+		List<Coche> coches = new ArrayList<>();
+
+		this.abrirConexion();
+
+		try {
+			stmt = con.prepareStatement(LISTAR_COCHES_DISPONIBLES);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Coche coche = new Coche();
+				coche.setMatricula(rs.getString("matricula"));
+
+				coches.add(coche);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		this.cerrarConexion();
+		return coches;
+	}
 
 	@Override
 	public Coche mostrarCoche(String matricula) {
@@ -248,5 +276,57 @@ public class DAOImplementacionBD implements DAO {
 		this.cerrarConexion();
 		return usu;
 	}
+
+	@Override
+	public void modificarPropietario(String dni, String matricula) {
+		this.abrirConexion();
+		
+		try {
+			stmt = con.prepareStatement(CAMBIAR_PROPIETARIO);
+			stmt.setString(1, dni);
+			stmt.setString(2, matricula);
+			
+			stmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		this.cerrarConexion();
+	}
+
+	@Override
+	public Usuario mostrarUsuarioPorDni(String dni) {
+		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		Usuario usu = new Usuario();
+				
+		this.abrirConexion();
+		
+		try {
+			stmt = con.prepareStatement(MOSTRAR_POR_DNI);
+			stmt.setString(1, dni);
+			
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				usu.setUsuario(rs.getString("nombre"));
+				usu.setContrasenia(rs.getString("contrasenia"));
+				usu.setDni(rs.getString("dni"));
+				usu.setTelefono(Integer.parseInt(rs.getString("telefono")));
+				usu.setFecha_nac(LocalDate.parse(rs.getDate("fecha_nac") + "", formateador));
+				usu.setGenero(rs.getString("genero").charAt(0));
+				usu.setTitulacion(rs.getString("titulacion"));
+			}
+			
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		this.cerrarConexion();
+		return usu;
+	}
+
+	
 
 }

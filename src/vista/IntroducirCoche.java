@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -17,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 import clases.Coche;
 import modelo.DAO;
+import java.awt.Toolkit;
 
 public class IntroducirCoche extends JDialog implements ActionListener {
 
@@ -31,16 +34,20 @@ public class IntroducirCoche extends JDialog implements ActionListener {
 	private JButton btnLimpiar;
 	private JButton btnConfirmar;
 
-	private Menu menu;
+	private MenuVehiculos menu;
 	private DAO dao;
 
-	public IntroducirCoche(Menu menu, boolean b, DAO dao) {
+	public IntroducirCoche(MenuVehiculos menu, boolean b, DAO dao) {
 		super(menu);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(IntroducirCoche.class.getResource("/utilidades/coche.png")));
+		setTitle("Introducir coches");
+		setResizable(false);
 		this.setModal(b);
 
 		this.menu = menu;
 		this.dao = dao;
 
+		
 		setBounds(100, 100, 750, 510);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
@@ -48,54 +55,60 @@ public class IntroducirCoche extends JDialog implements ActionListener {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 
+		this.addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent e) {
+		        volver();
+		    }
+		});
+		
 		JLabel lblNewLabel = new JLabel("Matricula:");
 		lblNewLabel.setFont(new Font("Serif", Font.PLAIN, 18));
-		lblNewLabel.setBounds(229, 281, 72, 24);
+		lblNewLabel.setBounds(331, 33, 72, 24);
 		contentPanel.add(lblNewLabel);
 
 		precio = new JTextField();
-		precio.setBounds(122, 161, 230, 27);
+		precio.setBounds(122, 254, 230, 27);
 		contentPanel.add(precio);
 		precio.setColumns(10);
 
 		JLabel lblNewLabel_1 = new JLabel("Marca:");
 		lblNewLabel_1.setFont(new Font("Serif", Font.PLAIN, 18));
-		lblNewLabel_1.setBounds(27, 70, 68, 24);
+		lblNewLabel_1.setBounds(27, 163, 68, 24);
 		contentPanel.add(lblNewLabel_1);
 
 		JLabel lblNewLabel_2 = new JLabel("Modelo:");
 		lblNewLabel_2.setFont(new Font("Serif", Font.PLAIN, 18));
-		lblNewLabel_2.setBounds(379, 70, 68, 24);
+		lblNewLabel_2.setBounds(379, 163, 68, 24);
 		contentPanel.add(lblNewLabel_2);
 
 		JLabel lblNewLabel_3 = new JLabel("Edad:");
 		lblNewLabel_3.setFont(new Font("Serif", Font.PLAIN, 18));
-		lblNewLabel_3.setBounds(379, 162, 68, 24);
+		lblNewLabel_3.setBounds(379, 255, 68, 24);
 		contentPanel.add(lblNewLabel_3);
 
 		JLabel lblNewLabel_4 = new JLabel("Precio:");
 		lblNewLabel_4.setFont(new Font("Serif", Font.PLAIN, 18));
-		lblNewLabel_4.setBounds(27, 162, 68, 24);
+		lblNewLabel_4.setBounds(27, 255, 68, 24);
 		contentPanel.add(lblNewLabel_4);
 
 		marca = new JTextField();
 		marca.setColumns(10);
-		marca.setBounds(122, 69, 230, 27);
+		marca.setBounds(122, 162, 230, 27);
 		contentPanel.add(marca);
 
 		modelo = new JTextField();
 		modelo.setColumns(10);
-		modelo.setBounds(474, 69, 230, 27);
+		modelo.setBounds(474, 162, 230, 27);
 		contentPanel.add(modelo);
 
 		edad = new JTextField();
 		edad.setColumns(10);
-		edad.setBounds(474, 161, 230, 26);
+		edad.setBounds(474, 254, 230, 26);
 		contentPanel.add(edad);
 
 		matricula = new JTextField();
 		matricula.setColumns(10);
-		matricula.setBounds(361, 283, 230, 27);
+		matricula.setBounds(252, 84, 230, 27);
 		contentPanel.add(matricula);
 
 		btnLimpiar = new JButton("Limpiar");
@@ -111,6 +124,11 @@ public class IntroducirCoche extends JDialog implements ActionListener {
 		btnConfirmar.setBounds(432, 393, 170, 55);
 		contentPanel.add(btnConfirmar);
 		btnConfirmar.addActionListener(this);
+	}
+	
+	protected void volver() {
+		this.dispose();
+		menu.setVisible(true);
 	}
 
 	@Override

@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -17,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 import clases.Usuario;
 import modelo.DAO;
+import java.awt.Toolkit;
 
 public class ListarUsuarios extends JDialog implements ActionListener {
 
@@ -33,6 +36,9 @@ public class ListarUsuarios extends JDialog implements ActionListener {
 
 	public ListarUsuarios(Menu menu, boolean b, DAO dao) {
 		super(menu);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ListarUsuarios.class.getResource("/utilidades/coche.png")));
+		setTitle("Listar Usuarios");
+		setResizable(false);
 		this.setModal(b);
 
 		this.menu = menu;
@@ -46,6 +52,12 @@ public class ListarUsuarios extends JDialog implements ActionListener {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 
+		this.addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent e) {
+		        volver();
+		    }
+		});
+		
 		btnConfirmar = new JButton("Confirmar");
 		btnConfirmar.setBackground(SystemColor.controlHighlight);
 		btnConfirmar.setFont(new Font("Serif", Font.PLAIN, 18));
@@ -74,6 +86,11 @@ public class ListarUsuarios extends JDialog implements ActionListener {
 		contentPanel.add(pantalla);
 	}
 
+	protected void volver() {
+		this.dispose();
+		menu.setVisible(true);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnConfirmar)) {

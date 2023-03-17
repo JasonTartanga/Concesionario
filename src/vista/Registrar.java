@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -47,19 +49,26 @@ public class Registrar extends JDialog implements ActionListener {
 
 	private DAO dao;
 	private VMain main;
+
 	public Registrar(VMain vMain, boolean b, DAO dao) {
 		super(vMain);
+		this.setModal(b);
 
 		this.main = vMain;
 		this.dao = dao;
-		setTitle("Registrarse");
-		this.setModal(b);
 
+		setTitle("Registrarse");
 		setBounds(100, 100, 500, 650);
 		setLocationRelativeTo(null);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				volver();
+			}
+		});
 
 		btnLimpiar = new JButton("Limpiar");
 		btnLimpiar.setBackground(SystemColor.controlHighlight);
@@ -168,6 +177,11 @@ public class Registrar extends JDialog implements ActionListener {
 		contentPanel.add(fecha_nac);
 	}
 
+	protected void volver() {
+		this.dispose();
+		main.setVisible(true);
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnLimpiar)) {
@@ -183,7 +197,7 @@ public class Registrar extends JDialog implements ActionListener {
 	private void altaUsuario() {
 		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		LocalDate fecha = LocalDate.parse(fecha_nac.getText(), formateador);
-		
+
 		char genero;
 		if (rdbtnHombre.isSelected()) {
 			genero = 'H';
@@ -208,7 +222,7 @@ public class Registrar extends JDialog implements ActionListener {
 	private void vovlerMain() {
 		JOptionPane.showMessageDialog(null, "Registro correcto", "", 3);
 		this.dispose();
-		main.setVisible(true);		
+		main.setVisible(true);
 	}
 
 	@SuppressWarnings({ "deprecation", "unused" })
@@ -280,11 +294,11 @@ public class Registrar extends JDialog implements ActionListener {
 		}
 
 		// Comprobamos el genero
-		if(!rdbtnHombre.isSelected() && !rdbtnMujer.isSelected()) {
+		if (!rdbtnHombre.isSelected() && !rdbtnMujer.isSelected()) {
 			JOptionPane.showMessageDialog(null, "Elige un genero", "ERROR", 0);
 			correcto = false;
 		}
-		
+
 		if (correcto) {
 			return true;
 		} else {

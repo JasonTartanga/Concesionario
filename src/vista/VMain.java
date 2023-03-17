@@ -4,9 +4,12 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -31,10 +34,15 @@ public class VMain extends JFrame implements ActionListener {
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
+		
+		this.addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent e) {
+		        salir();
+		    }
+		});
+		
 		btnRegistrarse = new JButton("Registrarse");
 		btnRegistrarse.setBackground(SystemColor.controlHighlight);
 		btnRegistrarse.setFont(new Font("Serif", Font.PLAIN, 24));
@@ -48,6 +56,11 @@ public class VMain extends JFrame implements ActionListener {
 		btnIniciarSesion.setBounds(218, 102, 297, 105);
 		contentPane.add(btnIniciarSesion);
 		btnIniciarSesion.addActionListener(this);
+	}
+
+	protected void salir() {
+		JOptionPane.showMessageDialog(this, "Hasta la proxima", "Adios", 3);
+		
 	}
 
 	@Override

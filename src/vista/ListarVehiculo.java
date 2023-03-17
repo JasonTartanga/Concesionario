@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -17,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 import clases.Coche;
 import modelo.DAO;
+import java.awt.Toolkit;
 
 public class ListarVehiculo extends JDialog implements ActionListener {
 
@@ -27,18 +30,27 @@ public class ListarVehiculo extends JDialog implements ActionListener {
 	private JComboBox<String> listaCoches;
 	private JTextArea pantalla;
 
-	private Menu menu;
+	private MenuVehiculos menu;
 	private DAO dao;
 	private List<Coche> coches;
 
-	public ListarVehiculo(Menu menu, boolean b, DAO dao) {
+	public ListarVehiculo(MenuVehiculos menu, boolean b, DAO dao) {
 		super(menu);
+		setTitle("Listar Vehiculos");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ListarVehiculo.class.getResource("/utilidades/coche.png")));
+		setResizable(false);
 		this.setModal(b);
 
 		this.menu = menu;
 		this.dao = dao;
 		coches = dao.listarCoches();
 
+		this.addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent e) {
+		        volver();
+		    }
+		});
+		
 		setBounds(100, 100, 750, 577);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
@@ -74,6 +86,11 @@ public class ListarVehiculo extends JDialog implements ActionListener {
 		contentPanel.add(pantalla);
 	}
 
+	protected void volver() {
+		this.dispose();
+		menu.setVisible(true);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnConfirmar)) {
@@ -89,8 +106,13 @@ public class ListarVehiculo extends JDialog implements ActionListener {
 		mensaje += "Modelo:\t\t" + coche.getModelo() + "\n";
 		mensaje += "Edad:\t\t" + coche.getEdad() + "\n";
 		mensaje += "Precio:\t\t" + coche.getPrecio() + "\n";
-		mensaje += "Propietario:\t" + coche.getDni_propietario() + "\n";
-
+		
+		if(coche.getDni_propietario() == null) {
+			mensaje += "No tiene propietario";
+		}else {
+			mensaje += "Propietario:\t" + dao.mostrarUsuarioPorDni(coche.getDni_propietario()).getUsuario()+ "\n";	
+		}
+		
 		pantalla.setText(mensaje);
 	}
 }
