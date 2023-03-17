@@ -30,18 +30,18 @@ public class ListarUsuarios extends JDialog implements ActionListener {
 	private JComboBox<String> listaUsuarios;
 	private JTextArea pantalla;
 
-	private Menu menu;
+	private MenuUsuario menu;
 	private DAO dao;
 	private List<Usuario> usuarios;
 
-	public ListarUsuarios(Menu menu, boolean b, DAO dao) {
-		super(menu);
+	public ListarUsuarios(MenuUsuario menuUsuario, boolean b, DAO dao) {
+		super(menuUsuario);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ListarUsuarios.class.getResource("/utilidades/coche.png")));
 		setTitle("Listar Usuarios");
 		setResizable(false);
 		this.setModal(b);
 
-		this.menu = menu;
+		this.menu = menuUsuario;
 		this.dao = dao;
 		usuarios = dao.listarUsuarios();
 

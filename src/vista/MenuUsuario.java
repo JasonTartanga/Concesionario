@@ -102,25 +102,26 @@ public class MenuUsuario extends JDialog implements ActionListener {
 	}
 
 	private void eliminar() {
-		// TODO Auto-generated method stub
-
+		EliminarUsuario elim = new EliminarUsuario(this, true, dao);
+		this.setVisible(false);
+		elim.setVisible(true);
 	}
 
 	private void modificar() {
-		VehiculoAUsuario vau = new VehiculoAUsuario(menu, true, dao);
+		ModificarUsuario vau = new ModificarUsuario(this, true, dao);
 		this.setVisible(false);
 		vau.setVisible(true);
 
 	}
 
 	private void listar() {
-		ListarVehiculo list = new ListarVehiculo(menu, true, dao);
+		ListarUsuarios list = new ListarUsuarios(this, true, dao);
 		this.setVisible(false);
 		list.setVisible(true);
 	}
 
 	private void introducir() {
-		IntroducirCoche intro = new IntroducirCoche(menu, true, dao);
+		ListarCochesDePropietario list = new ListarCochesDePropietario(this, true, dao);
 		this.setVisible(false);
 		intro.setVisible(true);
 

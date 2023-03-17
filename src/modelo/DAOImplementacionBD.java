@@ -33,6 +33,8 @@ public class DAOImplementacionBD implements DAO {
 	final private String MOSTRAR_USUARIO = "SELECT * FROM usuario WHERE dni = ?";
 	final private String CAMBIAR_PROPIETARIO = "UPDATE COCHE SET dni_propietario = ? WHERE matricula = ?";
 	final private String MOSTRAR_POR_DNI = "SELECT * FROM usuario WHERE dni = ?";
+	final private String MODIFICAR_USUARIO = "UPDATE USUARIO SET contrasenia = ?, telefono = ?, fecha_nac = ?, titulacion = ? WHERE dni = ?";
+	final private String ELIMINAR_USUARIO = "DELETE FROM USUARIO WHERE dni = ?";
 
 	private void abrirConexion() {
 		try {
@@ -325,6 +327,43 @@ public class DAOImplementacionBD implements DAO {
 		
 		this.cerrarConexion();
 		return usu;
+	}
+
+	@Override
+	public void modificarUsuario(Usuario usu) {
+		this.abrirConexion();
+		
+		try {
+			stmt = con.prepareStatement(MODIFICAR_USUARIO);
+			stmt.setString(1, usu.getContrasenia());
+			stmt.setString(2, usu.getTelefono() + "");
+			stmt.setString(3, usu.getFecha_nac() + "");
+			stmt.setString(4, usu.getTitulacion());
+			stmt.setString(5, usu.getDni());
+			
+			stmt.execute();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		this.cerrarConexion();
+	}
+
+	@Override
+	public void eliminarUsuario(String dni) {
+		this.abrirConexion();
+		
+		try {
+			stmt = con.prepareStatement(ELIMINAR_USUARIO);
+			stmt.setString(1, dni);
+			
+			stmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		this.cerrarConexion();
 	}
 
 	

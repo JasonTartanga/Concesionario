@@ -26,4 +26,11 @@ public interface DAO {
 	public void modificarPropietario(String dni, String matricula);
 	
 	public Usuario mostrarUsuarioPorDni(String dni);
+	
+	public void modificarUsuario(Usuario usu);
+	
+	public void eliminarUsuario(String dni);
+	
+	public List<Usuario> listarUsuariosPropietarios();
+	
 }

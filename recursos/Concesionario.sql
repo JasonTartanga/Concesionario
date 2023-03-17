@@ -5,7 +5,7 @@ USE CONCESIONARIO;
 DROP TABLE IF EXISTS USUARIO;
 CREATE TABLE USUARIO(
 	nombre			varchar(25)		not null,
-    contrasenia		varchar(16)		not null,
+    contrasenia		varchar(25)		not null,
     dni				char(9),
     telefono		integer(9)		not null,
     fecha_nac		date			not null,

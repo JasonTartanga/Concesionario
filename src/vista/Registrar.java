@@ -298,6 +298,15 @@ public class Registrar extends JDialog implements ActionListener {
 			JOptionPane.showMessageDialog(null, "Elige un genero", "ERROR", 0);
 			correcto = false;
 		}
+		
+		//Comprobamos la titulacion
+				if(titulacion.getSelectedIndex() == -1) {
+					titulacion.setBackground(new Color(153, 51, 51));
+					JOptionPane.showMessageDialog(null, "Introduce una titulacon");
+					correcto = false;
+				}else {
+					titulacion.setBackground(new Color(102, 204, 102));
+				}
 
 		if (correcto) {
 			return true;
