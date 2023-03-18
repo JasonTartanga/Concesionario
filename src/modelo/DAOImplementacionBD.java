@@ -25,16 +25,22 @@ public class DAOImplementacionBD implements DAO {
 
 	final private String INICIAR_SESION = "SELECT * FROM usuario WHERE nombre = ? and contrasenia = ?";
 	final private String ALTA_PROPIETARIO = "INSERT INTO usuario VALUES(?, ?, ?, ?, ?, ?, ?)";
-	final private String ALTA_COCHE = "INSERT INTO coche VALUES(?, ?, ?, ?, ?, ?)";
+	final private String ALTA_COCHE = "INSERT INTO coche VALUES(?, ?, ?, ?, ?)";
 	final private String LISTAR_COCHES = "SELECT matricula FROM coche";
-	final private String LISTAR_COCHES_DISPONIBLES = "SELECT matricula FROM coche WHERE dni_propietario is null";
+	final private String LISTAR_COCHES_DISPONIBLES = "SELECT matricula FROM coche WHERE matricula not in (SELECT matricula FROM pertenece)";
 	final private String MOSTRAR_COCHE = "SELECT * FROM coche WHERE matricula = ?";
 	final private String LISTAR_USUARIOS = "SELECT dni FROM usuario";
 	final private String MOSTRAR_USUARIO = "SELECT * FROM usuario WHERE dni = ?";
-	final private String CAMBIAR_PROPIETARIO = "UPDATE COCHE SET dni_propietario = ? WHERE matricula = ?";
+	final private String CAMBIAR_PROPIETARIO = "INSERT INTO pertenece VALUES(?, ?)";
 	final private String MOSTRAR_POR_DNI = "SELECT * FROM usuario WHERE dni = ?";
 	final private String MODIFICAR_USUARIO = "UPDATE USUARIO SET contrasenia = ?, telefono = ?, fecha_nac = ?, titulacion = ? WHERE dni = ?";
 	final private String ELIMINAR_USUARIO = "DELETE FROM USUARIO WHERE dni = ?";
+	final private String LISTAR_PROPIETARIOS = "SELECT distinct(dni) FROM pertenece";
+//	final private String LISTAR_DATOS_PROPIETARIOS = "SELECT u.dni, nombre, p.matricula, marca, modelo, edad, precio FROM usuario u Join pertenece p on u.dni = p.dni Join coche c on c.matricula = p.matricula";
+	final private String MOSTRAR_TODOS_LOS_COCHES_PROPIETARIOS = "SELECT c.* FROM coche c Join pertenece p on c.matricula = p.matricula WHERE dni = ?";
+	final private String BORRAR_COCHE = "DELETE FROM coche WHERE matricula = ?";
+	final private String MOSTRAR_PROPIETARIO_DE_COCHE = "SELECT u.* FROM usuario u Join pertenece p on u.dni = p.dni WHERE matricula = ?";
+	final private String LISTAR_COCHES_CON_PROPIETARIO = "SELECT matricula FROM pertenece";
 
 	private void abrirConexion() {
 		try {
@@ -87,8 +93,7 @@ public class DAOImplementacionBD implements DAO {
 
 	@Override
 	public Usuario inicarSesion(String nombre, String contrasenia) {
-		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		Usuario usu = null;
+		Usuario usu = new Usuario();
 		ResultSet rs;
 
 		this.abrirConexion();
@@ -102,14 +107,7 @@ public class DAOImplementacionBD implements DAO {
 			rs = stmt.executeQuery();
 
 			if (rs.next()) {
-				usu = new Usuario();
-				usu.setUsuario(rs.getString("nombre"));
-				usu.setContrasenia(rs.getString("contrasenia"));
-				usu.setDni(rs.getString("dni"));
-				usu.setTelefono(rs.getInt("telefono"));
-				usu.setFecha_nac(LocalDate.parse(rs.getDate("fecha_nac") + "", formateador));
-				usu.setGenero(rs.getString("genero").charAt(0));
-				usu.setTitulacion(rs.getString("titulacion"));
+				usu = setUsuario(usu, rs);
 			}
 
 			rs.close();
@@ -135,7 +133,6 @@ public class DAOImplementacionBD implements DAO {
 			stmt.setString(3, coc.getModelo());
 			stmt.setInt(4, coc.getEdad());
 			stmt.setFloat(5, coc.getPrecio());
-			stmt.setString(6, null);
 
 			stmt.execute();
 		} catch (SQLException e) {
@@ -170,7 +167,7 @@ public class DAOImplementacionBD implements DAO {
 		this.cerrarConexion();
 		return coches;
 	}
-	
+
 	@Override
 	public List<Coche> listarCochesDisponibles() {
 		List<Coche> coches = new ArrayList<>();
@@ -208,13 +205,7 @@ public class DAOImplementacionBD implements DAO {
 			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) {
-				coche.setMatricula(rs.getString("matricula"));
-				coche.setMarca(rs.getString("marca"));
-				coche.setModelo(rs.getString("modelo"));
-				coche.setEdad(Integer.parseInt(rs.getString("edad")));
-				coche.setPrecio(Float.parseFloat(rs.getString("precio")));
-				coche.setDni_propietario(rs.getString("dni_propietario"));
-
+				coche = setCoche(coche, rs);
 			}
 
 		} catch (SQLException e) {
@@ -250,8 +241,6 @@ public class DAOImplementacionBD implements DAO {
 
 	@Override
 	public Usuario mostrarUsuario(String dni) {
-		@SuppressWarnings("unused")
-		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		Usuario usu = new Usuario();
 
 		this.abrirConexion();
@@ -263,13 +252,7 @@ public class DAOImplementacionBD implements DAO {
 			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) {
-				usu.setUsuario(rs.getString("nombre"));
-				usu.setContrasenia(rs.getString("contrasenia"));
-				usu.setDni(rs.getString("dni"));
-				usu.setTelefono(Integer.parseInt(rs.getString("telefono")));
-				usu.setFecha_nac(LocalDate.parse(rs.getDate("fecha_nac") + "", formateador));
-				usu.setGenero(rs.getString("genero").charAt(0));
-				usu.setTitulacion(rs.getString("titulacion"));
+				usu = setUsuario(usu, rs);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -282,49 +265,41 @@ public class DAOImplementacionBD implements DAO {
 	@Override
 	public void modificarPropietario(String dni, String matricula) {
 		this.abrirConexion();
-		
+
 		try {
 			stmt = con.prepareStatement(CAMBIAR_PROPIETARIO);
 			stmt.setString(1, dni);
 			stmt.setString(2, matricula);
-			
+
 			stmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.cerrarConexion();
 	}
 
 	@Override
 	public Usuario mostrarUsuarioPorDni(String dni) {
-		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		Usuario usu = new Usuario();
-				
+
 		this.abrirConexion();
-		
+
 		try {
 			stmt = con.prepareStatement(MOSTRAR_POR_DNI);
 			stmt.setString(1, dni);
-			
-			
+
 			ResultSet rs = stmt.executeQuery();
-			
-			if(rs.next()) {
-				usu.setUsuario(rs.getString("nombre"));
-				usu.setContrasenia(rs.getString("contrasenia"));
-				usu.setDni(rs.getString("dni"));
-				usu.setTelefono(Integer.parseInt(rs.getString("telefono")));
-				usu.setFecha_nac(LocalDate.parse(rs.getDate("fecha_nac") + "", formateador));
-				usu.setGenero(rs.getString("genero").charAt(0));
-				usu.setTitulacion(rs.getString("titulacion"));
+
+			if (rs.next()) {
+				usu = setUsuario(usu, rs);
 			}
-			
+
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.cerrarConexion();
 		return usu;
 	}
@@ -332,7 +307,7 @@ public class DAOImplementacionBD implements DAO {
 	@Override
 	public void modificarUsuario(Usuario usu) {
 		this.abrirConexion();
-		
+
 		try {
 			stmt = con.prepareStatement(MODIFICAR_USUARIO);
 			stmt.setString(1, usu.getContrasenia());
@@ -340,32 +315,169 @@ public class DAOImplementacionBD implements DAO {
 			stmt.setString(3, usu.getFecha_nac() + "");
 			stmt.setString(4, usu.getTitulacion());
 			stmt.setString(5, usu.getDni());
-			
+
 			stmt.execute();
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.cerrarConexion();
 	}
 
 	@Override
 	public void eliminarUsuario(String dni) {
 		this.abrirConexion();
-		
+
 		try {
 			stmt = con.prepareStatement(ELIMINAR_USUARIO);
 			stmt.setString(1, dni);
-			
+
 			stmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
+	}
+
+	@Override
+	public List<Usuario> listarUsuariosPropietarios() {
+		List<Usuario> usuarios = new ArrayList<>();
+
+		this.abrirConexion();
+
+		try {
+			stmt = con.prepareStatement(LISTAR_PROPIETARIOS);
+
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Usuario usu = new Usuario();
+				usu.setDni(rs.getString("dni"));
+				usuarios.add(usu);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		this.cerrarConexion();
+		return usuarios;
+	}
+
+	@Override
+	public List<Coche> mostrarTodosCochesPropietaro(String dni) {
+		List<Coche> coches = new ArrayList<>();
+
+		this.abrirConexion();
+
+		try {
+			stmt = con.prepareStatement(MOSTRAR_TODOS_LOS_COCHES_PROPIETARIOS);
+			stmt.setString(1, dni);
+
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Coche coc = new Coche();
+				coc = setCoche(coc, rs);
+				coches.add(coc);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		this.cerrarConexion();
+		return coches;
+	}
+
+	@Override
+	public void eliminarCoche(String matricula) {
+		this.abrirConexion();
+
+		try {
+			stmt = con.prepareStatement(BORRAR_COCHE);
+			stmt.setString(1, matricula);
+
+			stmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		this.cerrarConexion();
 	}
 
-	
+	@Override
+	public Usuario mostrarPropietario(String matricula) {
+		Usuario usu = new Usuario();
 
+		this.abrirConexion();
+
+		try {
+			stmt = con.prepareStatement(MOSTRAR_PROPIETARIO_DE_COCHE);
+			stmt.setString(1, matricula);
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				setUsuario(usu, rs);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return usu;
+	}
+
+	private Usuario setUsuario(Usuario usu, ResultSet rs) {
+		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		try {
+			usu.setUsuario(rs.getString("nombre"));
+			usu.setContrasenia(rs.getString("contrasenia"));
+			usu.setDni(rs.getString("dni"));
+			usu.setTelefono(Integer.parseInt(rs.getString("telefono")));
+			usu.setFecha_nac(LocalDate.parse(rs.getDate("fecha_nac") + "", formateador));
+			usu.setGenero(rs.getString("genero").charAt(0));
+			usu.setTitulacion(rs.getString("titulacion"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return usu;
+	}
+
+	private Coche setCoche(Coche coc, ResultSet rs) {
+		try {
+			coc.setMatricula(rs.getString("matricula"));
+			coc.setMarca(rs.getString("marca"));
+			coc.setModelo(rs.getString("modelo"));
+			coc.setEdad(Integer.parseInt(rs.getString("edad")));
+			coc.setPrecio(Float.parseFloat(rs.getString("precio")));
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return coc;
+	}
+
+	@Override
+	public List<Coche> listarCocheConPropietario() {
+		List<Coche> coches = new ArrayList<>();
+
+		this.abrirConexion();
+
+		try {
+			stmt = con.prepareStatement(LISTAR_COCHES_CON_PROPIETARIO);
+
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Coche coc = new Coche();
+				coc.setMatricula(rs.getString("matricula"));
+				coches.add(coc);
+			}
+		} catch (SQLException e) {
+			// TODO: handle exception
+		}
+		return coches;
+	}
 }

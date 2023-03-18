@@ -11,15 +11,15 @@ INSERT INTO USUARIO (nombre, contrasenia, dni, telefono, fecha_nac, genero, titu
 	('Laura Torres', 'abc1234', '45678901I', 666666666, '1994-12-11', 'M', 'Universidad'),
 	('Javier Soto', 'clave', '23456789J', 777777777, '1980-01-21', 'H', 'Formacion Profesional');
     
-INSERT INTO COCHE (matricula, marca, modelo, edad, precio, dni_propietario) VALUES
-	('6969SEX', 'Bugatti', 'Shiron', 0, 69420, null),
-    ('1234ABC', 'Renault', 'Clio', 2, 10000.50, null),
-	('5678DEF', 'Seat', 'Ibiza', 1, 8500.75, null),
-	('9012GHI', 'Ford', 'Focus', 3, 12000.00, null),
-	('3456JKL', 'Peugeot', '208', 2, 9500.25, null),
-	('7890MNO', 'Volkswagen', 'Golf', 4, 15000.00, null),
-	('ABCDPQR', 'Audi', 'A3', 2, 13000.50, null),
-	('EFGHSTU', 'BMW', 'Serie 1', 1, 18000.75, null),
-	('IJKLVWX', 'Mercedes-Benz', 'Clase A', 3, 20000.00, null),
-	('YZ01234', 'Opel', 'Corsa', 2, 9000.25, null),
-	('5678AAA', 'Toyota', 'Yaris', 1, 10000.00, null);
+INSERT INTO COCHE (matricula, marca, modelo, edad, precio) VALUES
+	('6969SEX', 'Bugatti', 'Shiron', 0, 69420),
+    ('1234ABC', 'Renault', 'Clio', 2, 10000.50),
+	('5678DEF', 'Seat', 'Ibiza', 1, 8500.75),
+	('9012GHI', 'Ford', 'Focus', 3, 12000.00),
+	('3456JKL', 'Peugeot', '208', 2, 9500.25),
+	('7890MNO', 'Volkswagen', 'Golf', 4, 15000.00),
+	('ABCDPQR', 'Audi', 'A3', 2, 13000.50),
+	('EFGHSTU', 'BMW', 'Serie 1', 1, 18000.75),
+	('IJKLVWX', 'Mercedes-Benz', 'Clase A', 3, 20000.00),
+	('YZ01234', 'Opel', 'Corsa', 2, 9000.25),
+	('5678AAA', 'Toyota', 'Yaris', 1, 10000.00);

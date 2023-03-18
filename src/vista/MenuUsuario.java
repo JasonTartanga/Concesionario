@@ -52,14 +52,14 @@ public class MenuUsuario extends JDialog implements ActionListener {
 			}
 		});
 
-		btnInsertar = new JButton("Insertar");
+		btnInsertar = new JButton("Listar coches\r\n de usuarios");
 		btnInsertar.setBackground(SystemColor.controlHighlight);
 		btnInsertar.setFont(new Font("Serif", Font.PLAIN, 30));
 		btnInsertar.setBounds(22, 46, 333, 200);
 		contentPanel.add(btnInsertar);
 		btnInsertar.addActionListener(this);
 
-		btnListar = new JButton("Listar");
+		btnListar = new JButton("Listar usuarios");
 		btnListar.setBackground(SystemColor.controlHighlight);
 		btnListar.setFont(new Font("Serif", Font.PLAIN, 30));
 		btnListar.setBounds(377, 46, 333, 200);
@@ -123,7 +123,7 @@ public class MenuUsuario extends JDialog implements ActionListener {
 	private void introducir() {
 		ListarCochesDePropietario list = new ListarCochesDePropietario(this, true, dao);
 		this.setVisible(false);
-		intro.setVisible(true);
+		list.setVisible(true);
 
 	}
 

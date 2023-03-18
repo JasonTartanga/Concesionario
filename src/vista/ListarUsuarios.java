@@ -2,14 +2,13 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.SystemColor;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -19,14 +18,11 @@ import javax.swing.border.EmptyBorder;
 
 import clases.Usuario;
 import modelo.DAO;
-import java.awt.Toolkit;
 
 public class ListarUsuarios extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-
-	private JButton btnConfirmar;
 	private JComboBox<String> listaUsuarios;
 	private JTextArea pantalla;
 
@@ -57,32 +53,26 @@ public class ListarUsuarios extends JDialog implements ActionListener {
 		        volver();
 		    }
 		});
-		
-		btnConfirmar = new JButton("Confirmar");
-		btnConfirmar.setBackground(SystemColor.controlHighlight);
-		btnConfirmar.setFont(new Font("Serif", Font.PLAIN, 18));
-		btnConfirmar.setBounds(252, 467, 230, 60);
-		contentPanel.add(btnConfirmar);
-		btnConfirmar.addActionListener(this);
 
 		JLabel lblNewLabel = new JLabel("Que usuario quieres listar?");
-		lblNewLabel.setFont(new Font("Serif", Font.PLAIN, 18));
-		lblNewLabel.setBounds(272, 51, 190, 24);
+		lblNewLabel.setFont(new Font("Serif", Font.PLAIN, 30));
+		lblNewLabel.setBounds(210, 45, 313, 39);
 		contentPanel.add(lblNewLabel);
 
 		listaUsuarios = new JComboBox<String>();
 		listaUsuarios.setFont(new Font("Serif", Font.PLAIN, 18));
-		listaUsuarios.setBounds(118, 112, 498, 40);
+		listaUsuarios.setBounds(118, 121, 498, 40);
 		contentPanel.add(listaUsuarios);
 		for (Usuario usuario : usuarios) {
 			listaUsuarios.addItem(usuario.getDni());
 		}
 		listaUsuarios.setSelectedIndex(-1);
+		listaUsuarios.addActionListener(this);
 
 		pantalla = new JTextArea();
 		pantalla.setFont(new Font("Monospaced", Font.PLAIN, 20));
 		pantalla.setEditable(false);
-		pantalla.setBounds(75, 199, 583, 215);
+		pantalla.setBounds(75, 218, 583, 256);
 		contentPanel.add(pantalla);
 	}
 
@@ -93,7 +83,7 @@ public class ListarUsuarios extends JDialog implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(btnConfirmar)) {
+		if (e.getSource().equals(listaUsuarios)) {
 			listar();
 		}
 

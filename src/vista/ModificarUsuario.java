@@ -171,7 +171,7 @@ public class ModificarUsuario extends JDialog implements ActionListener {
 
 	@SuppressWarnings("deprecation")
 	private void modificar() {
-		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		usuario.setContrasenia(contrasenia.getText());
 		usuario.setTelefono(Integer.parseInt(telefono.getText()));
@@ -240,7 +240,7 @@ public class ModificarUsuario extends JDialog implements ActionListener {
 
 		// Comrpobamos la fecha
 		try {
-			DateTimeFormatter formateador = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			@SuppressWarnings("unused")
 			LocalDate fecha = LocalDate.parse(fecha_na.getText(), formateador);
 			fecha_na.setBackground(new Color(102, 204, 102));

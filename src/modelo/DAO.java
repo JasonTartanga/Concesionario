@@ -33,4 +33,11 @@ public interface DAO {
 	
 	public List<Usuario> listarUsuariosPropietarios();
 	
+	public List<Coche> mostrarTodosCochesPropietaro(String dni);
+	
+	public void eliminarCoche(String matricula);
+	
+	public Usuario mostrarPropietario(String matricula);
+	
+	public List<Coche> listarCocheConPropietario();
 }

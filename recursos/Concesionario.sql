@@ -22,8 +22,18 @@ CREATE TABLE COCHE(
     modelo			varchar(25)		not null,
     edad			integer			not null,
     precio			float			not null,
-    dni_propietario	char(9),
     
-    constraint pk_coche primary key (matricula),
-    constraint fk_coche foreign key (dni_propietario) references usuario(dni)
+    constraint pk_coche primary key (matricula)
 );
+
+DROP TABLE IF EXISTS PERTENECE;
+CREATE TABLE PERTENECE(
+	dni			char(9),
+    matricula	char(7),
+    
+    constraint pk_pertenece primary key (dni, matricula),
+    constraint fk_pertenece foreign key (dni) references usuario(dni) on delete cascade,
+    constraint fk_pertenece1 foreign key (matricula) references coche(matricula) on delete cascade
+);
+
+

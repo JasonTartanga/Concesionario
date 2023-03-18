@@ -2,6 +2,8 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -18,9 +20,6 @@ import javax.swing.border.EmptyBorder;
 
 import clases.Usuario;
 import modelo.DAO;
-import java.awt.SystemColor;
-import java.awt.Toolkit;
-import java.awt.Window.Type;
 
 public class IniciarSesion extends JDialog implements ActionListener {
 

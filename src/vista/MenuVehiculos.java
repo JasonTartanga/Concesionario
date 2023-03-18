@@ -66,7 +66,7 @@ public class MenuVehiculos extends JDialog implements ActionListener {
 		contentPanel.add(btnListar);
 		btnListar.addActionListener(this);
 
-		btnModificar = new JButton("Modificar");
+		btnModificar = new JButton("Asignarlo");
 		btnModificar.setBackground(SystemColor.controlHighlight);
 		btnModificar.setFont(new Font("Serif", Font.PLAIN, 30));
 		btnModificar.setBounds(22, 292, 333, 200);
@@ -102,8 +102,9 @@ public class MenuVehiculos extends JDialog implements ActionListener {
 	}
 
 	private void eliminar() {
-		// TODO Auto-generated method stub
-
+		EliminarVehiculo elim = new EliminarVehiculo(this, true, dao);
+		this.setVisible(false);
+		elim.setVisible(true);
 	}
 
 	private void modificar() {
